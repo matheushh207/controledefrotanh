@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle de Frota</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .app-container {
+      max-width: 720px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+    .app-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .logo {
+      max-width: 260px;
+      margin-bottom: 10px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      background: #e0e0e0;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: #2e7d32;
+      color: #fff;
+      font-weight: bold;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    input, select, button {
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    input[readonly] {
+      background: #f0f0f0;
+    }
+    button {
+      margin-top: 15px;
+      background: #2e7d32;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+<div class="app-container">
+
+  <header class="app-header">
+    <img src="logo.jpeg" class="logo">
+    <h1>Controle de Frota</h1>
+    <span>Registro operacional</span>
+  </header>
+
+  <div class="tabs">
+    <button id="tabKm" class="tab active">Controle de KM</button>
+    <button id="tabAbastecimento" class="tab">Abastecimento</button>
+  </div>
+
+  <main class="card">
+
+    <!-- CONTROLE DE KM -->
+    <form id="formKm">
+      <input type="hidden" name="tipoRegistro" value="KM">
+
+      <div class="form-grid">
+        <input type="date" name="data" required>
+
+        <select id="motoristaKm" name="motorista" required>
+          <option value="">Selecione o motorista</option>
+          <option value="VILSON">Vilson</option>
+          <option value="BLADEMIR">Blademir</option>
+          <option value="ALESSANDRO">Alessandro</option>
+          <option value="CLAUDIOMAR">Claudiomar</option>
+          <option value="MARIO">Mario</option>
+          <option value="JOEL">Joel</option>
+        </select>
+
+        <input id="veiculoKm" name="veiculo" placeholder="Veículo" readonly>
+        <input id="placaKm" name="placa" placeholder="Placa" readonly>
+
+        <input name="rota" placeholder="Rota">
+        <input type="text" name="kmInicial" placeholder="KM Inicial">
+        <input type="text" name="kmFinal" placeholder="KM Final">
+
+        <input name="usuarioResponsavel" placeholder="Usuário Responsável" required>
+      </div>
+
+      <button type="submit">Salvar Controle de KM</button>
+    </form>
+
+    <!-- ABASTECIMENTO -->
+    <form id="formAbastecimento" style="display:none;">
+      <input type="hidden" name="tipoRegistro" value="ABASTECIMENTO">
+
+      <div class="form-grid">
+        <input type="date" name="data" required>
+
+        <select id="motoristaAbast" name="motorista" required>
+          <option value="">Selecione o motorista</option>
+          <option value="VILSON">Vilson</option>
+          <option value="BLADEMIR">Blademir</option>
+          <option value="ALESSANDRO">Alessandro</option>
+          <option value="CLAUDIOMAR">Claudiomar</option>
+          <option value="MARIO">Mario</option>
+          <option value="JOEL">Joel</option>
+        </select>
+
+        <input id="veiculoAbast" name="veiculo" readonly>
+        <input id="placaAbast" name="placa" readonly>
+
+        <input type="text" name="kmAbastecimento" placeholder="KM Abastecimento">
+        <input type="number" name="combustivel" placeholder="Litros">
+        <input type="text" name="valorCombustivel" placeholder="Valor (R$)">
+
+        <input name="usuarioResponsavel" placeholder="Usuário Responsável" required>
+      </div>
+
+      <button type="submit">Salvar Abastecimento</button>
+    </form>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
