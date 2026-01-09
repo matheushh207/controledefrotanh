@@ -1,183 +1,116 @@
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbyHgXFNIyupkytdKEq6nWjXyhjWXxjgibOOuSt2GdkM6jYUWZWF-wE-s4VFBb5NUCJd/exec";
 
-// ===============================
-// MOTORISTAS + REGRAS
-// ===============================
 const motoristas = {
-  VILSON: {
-    veiculo: "FORD CARGO 815-E",
-    placa: "IRT6089",
-    diaria: 600
-  },
-  MARIO: {
-    veiculo: "VW 8 160",
-    placa: "IVA0J65",
-    diaria: 500
-  },
-  JOEL: {
-    veiculo: "RENAULT MASTER FUR L3H2",
-    placa: "JAN2A79",
-    diaria: 400
-  },
-  BLADEMIR: {
-    veiculo: "M BEN 415",
-    placa: "IVE5C19",
-    diaria: 400
-  },
-  ALESSANDRO: {
-    veiculo: "M BENZ 915-C",
-    placa: "ITC2C48",
-    diaria: 500
-  },
-  CLAUDIOMAR: {
-    veiculo: "VW 9 170 DRC 4X2",
-    placa: "IYS7E12",
-    mensal: 12000
-  }
+  VILSON: { veiculo: "FORD CARGO 815-E", placa: "IRT6089" },
+  BLADEMIR: { veiculo: "M BEN 415", placa: "IVE5C19" },
+  ALESSANDRO: { veiculo: "M BENZ 915-C", placa: "ITC2C48" },
+  CLAUDIOMAR: { veiculo: "VW 9 170 DRC 4X2", placa: "IYS7E12" },
+  MARIO: { veiculo: "VW 8 160", placa: "IVA0J65" },
+  JOEL: { veiculo: "RENAULT MASTER FUR L3H2", placa: "JAN2A79" }
 };
 
-const formKm = document.getElementById("formKm");
-const formAbast = document.getElementById("formAbastecimento");
-const tabKm = document.getElementById("tabKm");
-const tabAbast = document.getElementById("tabAbastecimento");
+// ===== DIÁRIAS =====
+const DIARIAS_FIXAS = {
+  VILSON: 600,
+  MARIO: 500,
+  JOEL: 400,
+  BLADEMIR: 400,
+  ALESSANDRO: 500
+};
 
-// ===============================
-// TOAST
-// ===============================
-const toast = document.createElement("div");
-toast.innerText = "Salvo com sucesso";
-Object.assign(toast.style, {
-  position: "fixed",
-  bottom: "30px",
-  right: "30px",
-  background: "#2e7d32",
-  color: "#fff",
-  padding: "14px 22px",
-  borderRadius: "6px",
-  opacity: "0",
-  transition: "opacity 0.4s",
-  zIndex: "9999"
+const VALOR_MENSAL_CLAUDIOMAR = 12000;
+
+const FERIADOS_FIXOS = [
+  "01-01","21-04","01-05","07-09","12-10","02-11","15-11","25-12"
+];
+
+function isFeriado(date) {
+  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  return FERIADOS_FIXOS.includes(`${d}-${m}`);
+}
+
+function contarDiasUteis(ano, mes) {
+  let dias = 0;
+  const ultimoDia = new Date(ano, mes + 1, 0).getDate();
+
+  for (let d = 1; d <= ultimoDia; d++) {
+    const data = new Date(ano, mes, d);
+    const diaSemana = data.getDay();
+    if (diaSemana !== 0 && diaSemana !== 6 && !isFeriado(data)) {
+      dias++;
+    }
+  }
+  return dias;
+}
+
+// ===== DOM =====
+document.addEventListener("DOMContentLoaded", () => {
+  const formKm = document.getElementById("formKm");
+  const formAbast = document.getElementById("formAbastecimento");
+
+  const tabKm = document.getElementById("tabKm");
+  const tabAbast = document.getElementById("tabAbastecimento");
+
+  tabKm.onclick = () => {
+    formKm.style.display = "block";
+    formAbast.style.display = "none";
+    tabKm.classList.add("active");
+    tabAbast.classList.remove("active");
+  };
+
+  tabAbast.onclick = () => {
+    formKm.style.display = "none";
+    formAbast.style.display = "block";
+    tabAbast.classList.add("active");
+    tabKm.classList.remove("active");
+  };
+
+  function vincularMotorista(selectId, veiculoId, placaId) {
+    document.getElementById(selectId).addEventListener("change", function () {
+      const d = motoristas[this.value];
+      document.getElementById(veiculoId).value = d ? d.veiculo : "";
+      document.getElementById(placaId).value = d ? d.placa : "";
+    });
+  }
+
+  vincularMotorista("motoristaKm", "veiculoKm", "placaKm");
+  vincularMotorista("motoristaAbast", "veiculoAbast", "placaAbast");
+
+  const motoristaKm = document.getElementById("motoristaKm");
+  const dataKm = formKm.querySelector('[name="data"]');
+  const campoDiaria = formKm.querySelector('[name="valorDiaria"]');
+
+  function calcularDiaria() {
+    if (!motoristaKm.value || !dataKm.value) {
+      campoDiaria.value = "";
+      return;
+    }
+
+    if (motoristaKm.value === "CLAUDIOMAR") {
+      const data = new Date(dataKm.value + "T00:00:00");
+      const diasUteis = contarDiasUteis(data.getFullYear(), data.getMonth());
+      campoDiaria.value = (VALOR_MENSAL_CLAUDIOMAR / diasUteis)
+        .toFixed(2).replace(".", ",");
+    } else {
+      campoDiaria.value = DIARIAS_FIXAS[motoristaKm.value]
+        .toFixed(2).replace(".", ",");
+    }
+  }
+
+  motoristaKm.addEventListener("change", calcularDiaria);
+  dataKm.addEventListener("change", calcularDiaria);
+
+  async function enviar(form) {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: new FormData(form),
+      mode: "no-cors"
+    });
+    form.reset();
+  }
+
+  formKm.onsubmit = e => { e.preventDefault(); enviar(formKm); };
+  formAbast.onsubmit = e => { e.preventDefault(); enviar(formAbast); };
 });
-document.body.appendChild(toast);
-
-function mostrarToast() {
-  toast.style.opacity = "1";
-  setTimeout(() => (toast.style.opacity = "0"), 3000);
-}
-
-// ===============================
-// ABAS
-// ===============================
-tabKm.onclick = () => {
-  formKm.style.display = "block";
-  formAbast.style.display = "none";
-  tabKm.classList.add("active");
-  tabAbast.classList.remove("active");
-};
-
-tabAbast.onclick = () => {
-  formKm.style.display = "none";
-  formAbast.style.display = "block";
-  tabAbast.classList.add("active");
-  tabKm.classList.remove("active");
-};
-
-// ===============================
-// DIAS ÚTEIS (SEG A SEX)
-// ===============================
-function calcularDiasUteis(ano, mes) {
-  let diasUteis = 0;
-  const data = new Date(ano, mes, 1);
-
-  while (data.getMonth() === mes) {
-    const diaSemana = data.getDay(); // 0=Dom, 6=Sáb
-    if (diaSemana !== 0 && diaSemana !== 6) {
-      diasUteis++;
-    }
-    data.setDate(data.getDate() + 1);
-  }
-
-  return diasUteis;
-}
-
-// ===============================
-// AUTO VEÍCULO / PLACA / DIÁRIA
-// ===============================
-function vincularMotorista(selectId, veiculoId, placaId, diariaName, dataName) {
-  const select = document.getElementById(selectId);
-  const dataInput = document.querySelector(`[name="${dataName}"]`);
-  const diariaInput = diariaName
-    ? document.querySelector(`[name="${diariaName}"]`)
-    : null;
-
-  function atualizar() {
-    const d = motoristas[select.value];
-
-    document.getElementById(veiculoId).value = d ? d.veiculo : "";
-    document.getElementById(placaId).value = d ? d.placa : "";
-
-    if (!diariaInput || !d || !dataInput.value) return;
-
-    let valorDiaria = d.diaria || 0;
-
-    // Regra especial: Claudiomar
-    if (d.mensal) {
-      const data = new Date(dataInput.value);
-      const diasUteis = calcularDiasUteis(
-        data.getFullYear(),
-        data.getMonth()
-      );
-      valorDiaria = d.mensal / diasUteis;
-    }
-
-    diariaInput.value = valorDiaria.toFixed(2).replace(".", ",");
-  }
-
-  select.addEventListener("change", atualizar);
-  dataInput.addEventListener("change", atualizar);
-}
-
-// ===============================
-// VINCULAÇÕES
-// ===============================
-vincularMotorista(
-  "motoristaKm",
-  "veiculoKm",
-  "placaKm",
-  "valorDiaria",
-  "data"
-);
-
-vincularMotorista(
-  "motoristaAbast",
-  "veiculoAbast",
-  "placaAbast",
-  null,
-  "data"
-);
-
-// ===============================
-// ENVIO
-// ===============================
-async function enviar(form) {
-  const formData = new FormData(form);
-  await fetch(SCRIPT_URL, {
-    method: "POST",
-    body: formData,
-    mode: "no-cors"
-  });
-  mostrarToast();
-}
-
-formKm.onsubmit = async (e) => {
-  e.preventDefault();
-  await enviar(formKm);
-  formKm.reset();
-};
-
-formAbast.onsubmit = async (e) => {
-  e.preventDefault();
-  await enviar(formAbast);
-  formAbast.reset();
-};
