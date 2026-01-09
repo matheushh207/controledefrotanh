@@ -89,7 +89,7 @@
 
   <main class="card">
 
-    <!-- CONTROLE DE KM -->
+    <!-- ================= CONTROLE DE KM ================= -->
     <form id="formKm">
       <input type="hidden" name="tipoRegistro" value="KM">
 
@@ -110,8 +110,21 @@
         <input id="placaKm" name="placa" placeholder="Placa" readonly>
 
         <input name="rota" placeholder="Rota">
+
         <input type="text" name="kmInicial" placeholder="KM Inicial">
         <input type="text" name="kmFinal" placeholder="KM Final">
+
+        <!-- DIÁRIA -->
+        <input name="valorDiaria" placeholder="Valor da diária (R$)" readonly>
+
+        <!-- PEDÁGIO -->
+        <select name="temPedagio">
+          <option value="">Pedágio?</option>
+          <option value="SIM">Sim</option>
+          <option value="NAO">Não</option>
+        </select>
+
+        <input type="text" name="valorPedagio" placeholder="Valor do pedágio (R$)">
 
         <input name="usuarioResponsavel" placeholder="Usuário Responsável" required>
       </div>
@@ -119,7 +132,7 @@
       <button type="submit">Salvar Controle de KM</button>
     </form>
 
-    <!-- ABASTECIMENTO -->
+    <!-- ================= ABASTECIMENTO ================= -->
     <form id="formAbastecimento" style="display:none;">
       <input type="hidden" name="tipoRegistro" value="ABASTECIMENTO">
 
@@ -142,6 +155,18 @@
         <input type="text" name="kmAbastecimento" placeholder="KM Abastecimento">
         <input type="text" name="combustivel" placeholder="Litros">
         <input type="text" name="valorCombustivel" placeholder="Valor (R$)">
+
+        <!-- DIÁRIA -->
+        <input name="valorDiaria" placeholder="Valor da diária (R$)" readonly>
+
+        <!-- PEDÁGIO -->
+        <select name="temPedagio">
+          <option value="">Pedágio?</option>
+          <option value="SIM">Sim</option>
+          <option value="NAO">Não</option>
+        </select>
+
+        <input type="text" name="valorPedagio" placeholder="Valor do pedágio (R$)">
 
         <input name="usuarioResponsavel" placeholder="Usuário Responsável" required>
       </div>
