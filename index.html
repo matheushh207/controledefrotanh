@@ -51,7 +51,6 @@
     }
     .form-grid {
       display: grid;
-      grid-template-columns: 1fr;
       gap: 12px;
     }
     input, select, button {
@@ -89,7 +88,7 @@
 
   <main class="card">
 
-    <!-- ================= CONTROLE DE KM ================= -->
+    <!-- ===== CONTROLE DE KM ===== -->
     <form id="formKm">
       <input type="hidden" name="tipoRegistro" value="KM">
 
@@ -114,10 +113,8 @@
         <input type="text" name="kmInicial" placeholder="KM Inicial">
         <input type="text" name="kmFinal" placeholder="KM Final">
 
-        <!-- DIÁRIA -->
         <input name="valorDiaria" placeholder="Valor da diária (R$)" readonly>
 
-        <!-- PEDÁGIO -->
         <select name="temPedagio">
           <option value="">Pedágio?</option>
           <option value="SIM">Sim</option>
@@ -132,7 +129,7 @@
       <button type="submit">Salvar Controle de KM</button>
     </form>
 
-    <!-- ================= ABASTECIMENTO ================= -->
+    <!-- ===== ABASTECIMENTO ===== -->
     <form id="formAbastecimento" style="display:none;">
       <input type="hidden" name="tipoRegistro" value="ABASTECIMENTO">
 
