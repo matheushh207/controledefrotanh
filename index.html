@@ -103,9 +103,14 @@
           <option value="CLAUDIOMAR">Claudiomar</option>
           <option value="MARIO">Mario</option>
           <option value="JOEL">Joel</option>
+          <option value="CARLOS">Carlos</option>
         </select>
 
-        <input id="veiculoKm" name="veiculo" placeholder="Veículo" readonly>
+        <!-- 🔴 AGORA É SELECT -->
+        <select id="veiculoKm" name="veiculo" required>
+          <option value="">Selecione o veículo</option>
+        </select>
+
         <input id="placaKm" name="placa" placeholder="Placa" readonly>
 
         <input name="rota" placeholder="Rota">
@@ -144,10 +149,15 @@
           <option value="CLAUDIOMAR">Claudiomar</option>
           <option value="MARIO">Mario</option>
           <option value="JOEL">Joel</option>
+          <option value="CARLOS">Carlos</option>
         </select>
 
-        <input id="veiculoAbast" name="veiculo" readonly>
-        <input id="placaAbast" name="placa" readonly>
+        <!-- 🔴 AGORA É SELECT -->
+        <select id="veiculoAbast" name="veiculo" required>
+          <option value="">Selecione o veículo</option>
+        </select>
+
+        <input id="placaAbast" name="placa" placeholder="Placa" readonly>
 
         <input type="text" name="kmAbastecimento" placeholder="KM Abastecimento">
         <input type="text" name="combustivel" placeholder="Litros">
