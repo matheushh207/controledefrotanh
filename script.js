@@ -19,7 +19,7 @@ const motoristas = {
     { veiculo: "RENAULT MASTER FUR L3H2", placa: "JAN2A79" }
   ],
 
-  // 🔴 MÁRIO COM DOIS CAMINHÕES
+  // 🔴 MÁRIO COM DOIS VEÍCULOS
   MARIO: [
     { veiculo: "VW 8 160", placa: "IVA0J65" },
     { veiculo: "RESERVA", placa: "JDO0E15" }
@@ -44,7 +44,7 @@ const DIARIAS_FIXAS = {
 const VALOR_MENSAL_CLAUDIOMAR = 12000;
 
 const FERIADOS_FIXOS = [
-  "01-01","17-02","21-04","01-05","07-09",
+  "01-01","21-04","01-05","07-09",
   "12-10","02-11","15-11","25-12"
 ];
 
@@ -61,7 +61,6 @@ function contarDiasUteis(ano, mes) {
   for (let d = 1; d <= ultimoDia; d++) {
     const data = new Date(ano, mes, d);
     const diaSemana = data.getDay();
-
     if (diaSemana !== 0 && diaSemana !== 6 && !isFeriado(data)) {
       dias++;
     }
@@ -91,10 +90,10 @@ document.addEventListener("DOMContentLoaded", () => {
     tabKm.classList.remove("active");
   };
 
-  // ===== VINCULAR MOTORISTA → VEÍCULO(S) =====
-  function vincularMotorista(selectMotoristaId, selectVeiculoId, placaId) {
-    const motoristaSelect = document.getElementById(selectMotoristaId);
-    const veiculoSelect = document.getElementById(selectVeiculoId);
+  // ===== MOTORISTA → VEÍCULO =====
+  function vincularMotorista(motoristaId, veiculoId, placaId) {
+    const motoristaSelect = document.getElementById(motoristaId);
+    const veiculoSelect = document.getElementById(veiculoId);
     const placaInput = document.getElementById(placaId);
 
     motoristaSelect.addEventListener("change", () => {
@@ -105,28 +104,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const lista = motoristas[motoristaSelect.value];
       if (!lista) return;
 
-      lista.forEach((v, index) => {
+      lista.forEach(v => {
         const opt = document.createElement("option");
-        opt.value = index;
+        opt.value = v.veiculo;              // 🔴 GRAVA NOME DO VEÍCULO
         opt.textContent = `${v.veiculo} - ${v.placa}`;
+        opt.dataset.placa = v.placa;        // 🔴 GUARDA PLACA
         veiculoSelect.appendChild(opt);
       });
 
-      // Auto seleciona se só tiver 1 veículo
+      // Auto selecionar quando houver apenas 1 veículo
       if (lista.length === 1) {
-        veiculoSelect.value = 0;
+        veiculoSelect.selectedIndex = 1;
         placaInput.value = lista[0].placa;
       }
     });
 
     veiculoSelect.addEventListener("change", () => {
-      const lista = motoristas[motoristaSelect.value];
-      if (!lista) return;
-
-      const v = lista[veiculoSelect.value];
-      if (!v) return;
-
-      placaInput.value = v.placa;
+      placaInput.value =
+        veiculoSelect.options[veiculoSelect.selectedIndex]
+          ?.dataset.placa || "";
     });
   }
 
@@ -150,7 +146,6 @@ document.addEventListener("DOMContentLoaded", () => {
         data.getFullYear(),
         data.getMonth()
       );
-
       campoDiaria.value = (VALOR_MENSAL_CLAUDIOMAR / diasUteis)
         .toFixed(2)
         .replace(".", ",");
