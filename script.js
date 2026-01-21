@@ -1,34 +1,51 @@
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbyHgXFNIyupkytdKEq6nWjXyhjWXxjgibOOuSt2GdkM6jYUWZWF-wE-s4VFBb5NUCJd/exec";
 
-// ===== MOTORISTAS / VEÍCULOS =====
+// ===== MOTORISTAS / VEÍCULOS / CATEGORIA =====
 const motoristas = {
-  VILSON: [
-    { veiculo: "FORD CARGO 815-E", placa: "IRT6089" }
-  ],
-  BLADEMIR: [
-    { veiculo: "M BEN 415", placa: "IVE5C19" }
-  ],
-  ALESSANDRO: [
-    { veiculo: "M BENZ 915-C", placa: "ITC2C48" }
-  ],
-  CLAUDIOMAR: [
-    { veiculo: "VW 9 170 DRC 4X2", placa: "IYS7E12" }
-  ],
-  JOEL: [
-    { veiculo: "RENAULT MASTER FUR L3H2", placa: "JAN2A79" }
-  ],
-
-  // 🔴 MÁRIO COM DOIS VEÍCULOS
-  MARIO: [
-    { veiculo: "VW 8 160", placa: "IVA0J65" },
-    { veiculo: "RESERVA", placa: "JDO0E15" }
-  ],
-
-  // 🔴 NOVO MOTORISTA
-  CARLOS: [
-    { veiculo: "C-750", placa: "ITP9388" }
-  ]
+  VILSON: {
+    categoria: "Caminhão 3/4",
+    veiculos: [
+      { veiculo: "FORD CARGO 815-E", placa: "IRT6089" }
+    ]
+  },
+  BLADEMIR: {
+    categoria: "Van",
+    veiculos: [
+      { veiculo: "M BEN 415", placa: "IVE5C19" }
+    ]
+  },
+  ALESSANDRO: {
+    categoria: "Caminhão 3/4",
+    veiculos: [
+      { veiculo: "M BENZ 915-C", placa: "ITC2C48" }
+    ]
+  },
+  CLAUDIOMAR: {
+    categoria: "Caminhão 3/4",
+    veiculos: [
+      { veiculo: "VW 9 170 DRC 4X2", placa: "IYS7E12" }
+    ]
+  },
+  JOEL: {
+    categoria: "Van",
+    veiculos: [
+      { veiculo: "RENAULT MASTER FUR L3H2", placa: "JAN2A79" }
+    ]
+  },
+  MARIO: {
+    categoria: "Caminhão 3/4",
+    veiculos: [
+      { veiculo: "VW 8 160", placa: "IVA0J65" },
+      { veiculo: "RESERVA", placa: "JDO0E15" }
+    ]
+  },
+  CARLOS: {
+    categoria: "Truck",
+    veiculos: [
+      { veiculo: "C-750", placa: "ITP9388" }
+    ]
+  }
 };
 
 // ===== DIÁRIAS =====
@@ -90,44 +107,45 @@ document.addEventListener("DOMContentLoaded", () => {
     tabKm.classList.remove("active");
   };
 
-  // ===== MOTORISTA → VEÍCULO =====
-  function vincularMotorista(motoristaId, veiculoId, placaId) {
+  // ===== MOTORISTA → VEÍCULO / PLACA / CATEGORIA =====
+  function vincularMotorista(motoristaId, veiculoId, placaId, categoriaId) {
     const motoristaSelect = document.getElementById(motoristaId);
     const veiculoSelect = document.getElementById(veiculoId);
     const placaInput = document.getElementById(placaId);
+    const categoriaInput = document.getElementById(categoriaId);
 
     motoristaSelect.addEventListener("change", () => {
-      veiculoSelect.innerHTML =
-        '<option value="">Selecione o veículo</option>';
+      veiculoSelect.innerHTML = '<option value="">Selecione o veículo</option>';
       placaInput.value = "";
+      categoriaInput.value = "";
 
-      const lista = motoristas[motoristaSelect.value];
-      if (!lista) return;
+      const dados = motoristas[motoristaSelect.value];
+      if (!dados) return;
 
-      lista.forEach(v => {
+      categoriaInput.value = dados.categoria;
+
+      dados.veiculos.forEach(v => {
         const opt = document.createElement("option");
-        opt.value = v.veiculo;              // 🔴 GRAVA NOME DO VEÍCULO
-        opt.textContent = `${v.veiculo} - ${v.placa}`;
-        opt.dataset.placa = v.placa;        // 🔴 GUARDA PLACA
+        opt.value = v.veiculo;
+        opt.textContent = v.veiculo; // 🔴 NÃO MOSTRA PLACA
+        opt.dataset.placa = v.placa;
         veiculoSelect.appendChild(opt);
       });
 
-      // Auto selecionar quando houver apenas 1 veículo
-      if (lista.length === 1) {
+      if (dados.veiculos.length === 1) {
         veiculoSelect.selectedIndex = 1;
-        placaInput.value = lista[0].placa;
+        placaInput.value = dados.veiculos[0].placa;
       }
     });
 
     veiculoSelect.addEventListener("change", () => {
       placaInput.value =
-        veiculoSelect.options[veiculoSelect.selectedIndex]
-          ?.dataset.placa || "";
+        veiculoSelect.options[veiculoSelect.selectedIndex]?.dataset.placa || "";
     });
   }
 
-  vincularMotorista("motoristaKm", "veiculoKm", "placaKm");
-  vincularMotorista("motoristaAbast", "veiculoAbast", "placaAbast");
+  vincularMotorista("motoristaKm", "veiculoKm", "placaKm", "categoriaKm");
+  vincularMotorista("motoristaAbast", "veiculoAbast", "placaAbast", "categoriaAbast");
 
   // ===== DIÁRIA =====
   const motoristaKm = document.getElementById("motoristaKm");
