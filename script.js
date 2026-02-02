@@ -153,28 +153,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const campoDiaria = formKm.querySelector('[name="valorDiaria"]');
 
   function calcularDiaria() {
-    if (!motoristaKm.value || !dataKm.value) {
-      campoDiaria.value = "";
-      return;
-    }
+  campoDiaria.value = "";
 
-    if (motoristaKm.value === "CLAUDIOMAR") {
-      const data = new Date(dataKm.value + "T00:00:00");
-      const diasUteis = contarDiasUteis(
-        data.getFullYear(),
-        data.getMonth()
-      );
-      campoDiaria.value = (VALOR_MENSAL_CLAUDIOMAR / diasUteis)
-        .toFixed(2)
-        .replace(".", ",");
-    } else {
-      const valor = DIARIAS_FIXAS[motoristaKm.value] || 0;
-      campoDiaria.value = valor.toFixed(2).replace(".", ",");
-    }
+  if (!motoristaKm.value || !dataKm.value) return;
+
+  const motorista = motoristaKm.value.trim().toUpperCase();
+  const data = new Date(dataKm.value + "T00:00:00");
+
+  if (motorista === "CLAUDIOMAR") {
+    const diasUteis = contarDiasUteis(
+      data.getFullYear(),
+      data.getMonth()
+    );
+
+    const valor = VALOR_MENSAL_CLAUDIOMAR / diasUteis;
+
+    campoDiaria.value = valor.toFixed(2).replace(".", ",");
+    return;
   }
 
-  motoristaKm.addEventListener("change", calcularDiaria);
-  dataKm.addEventListener("change", calcularDiaria);
+  const valorFixo = DIARIAS_FIXAS[motorista] || 0;
+  campoDiaria.value = valorFixo.toFixed(2).replace(".", ",");
+}
 
   // ===== ENVIO =====
   async function enviar(form) {
