@@ -3,10 +3,6 @@ const SCRIPT_URL =
 
 // ===== MOTORISTAS / VEÍCULOS / CATEGORIA =====
 const motoristas = {
-  VILSON: {
-    categoria: "Caminhão 3/4",
-    veiculos: [{ veiculo: "FORD CARGO 815-E", placa: "IRT6089" }]
-  },
   BLADEMIR: {
     categoria: "Van",
     veiculos: [{ veiculo: "M BEN 415", placa: "IVE5C19" }]
@@ -33,12 +29,15 @@ const motoristas = {
   CARLOS: {
     categoria: "Truck",
     veiculos: [{ veiculo: "C-750", placa: "ITP9388" }]
+  },
+  JONAS: {
+    categoria: "Caminhão 3/4",
+    veiculos: [{ veiculo: "A DEFINIR", placa: "IVT6G27" }]
   }
 };
 
-// ===== DIÁRIAS =====
+// ===== DIÁRIAS FIXAS =====
 const DIARIAS_FIXAS = {
-  VILSON: 600,
   MARIO: 500,
   JOEL: 400,
   BLADEMIR: 400,
@@ -46,7 +45,9 @@ const DIARIAS_FIXAS = {
   CARLOS: 0
 };
 
+// ===== VALORES MENSAIS =====
 const VALOR_MENSAL_CLAUDIOMAR = 12000;
+const VALOR_MENSAL_JONAS = 12000;
 
 // ===== FERIADOS =====
 const FERIADOS_FIXOS = [
@@ -150,22 +151,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const motorista = motoristaKm.value.trim().toUpperCase();
     const data = new Date(dataKm.value + "T00:00:00");
 
-    if (motorista === "CLAUDIOMAR") {
+    // ===== MOTORISTAS MENSAIS =====
+    if (motorista === "CLAUDIOMAR" || motorista === "JONAS") {
       const diasUteis = contarDiasUteis(
         data.getFullYear(),
         data.getMonth()
       );
 
-      const valor = VALOR_MENSAL_CLAUDIOMAR / diasUteis;
+      const valorMensal =
+        motorista === "CLAUDIOMAR"
+          ? VALOR_MENSAL_CLAUDIOMAR
+          : VALOR_MENSAL_JONAS;
+
+      const valor = valorMensal / diasUteis;
       campoDiaria.value = valor.toFixed(2).replace(".", ",");
       return;
     }
 
+    // ===== MOTORISTAS COM DIÁRIA FIXA =====
     const valorFixo = DIARIAS_FIXAS[motorista] || 0;
     campoDiaria.value = valorFixo.toFixed(2).replace(".", ",");
   }
 
-  // 🔥 EVENTOS QUE ESTAVAM FALTANDO
   motoristaKm.addEventListener("change", calcularDiaria);
   dataKm.addEventListener("change", calcularDiaria);
 
