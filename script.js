@@ -32,7 +32,8 @@ const motoristas = {
   },
   JONAS: {
     categoria: "Caminhão 3/4",
-    veiculos: [{ veiculo: "A DEFINIR", placa: "IVT6G27" }]
+    veiculos: [{ veiculo: "A DEFINIR", placa: "IVT6G27" }],
+    veiculos: [{ veiculo: "A DEFINIR", placa: "IYF4965" }]
   }
 };
 
